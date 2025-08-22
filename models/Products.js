@@ -11,6 +11,10 @@ const ProductSchema = new Schema({
         type: Number,
         required: true
     },
+    stock: {
+        type: Number,
+        default: 0
+    },
     brand: {
         type: String,
         required: true
@@ -39,6 +43,9 @@ const ProductSchema = new Schema({
     },
     ageTo: {
         type: Number,
+    },
+    deletedAt: {
+        type: Date,
     },
 }, {timestamps: true})
 
