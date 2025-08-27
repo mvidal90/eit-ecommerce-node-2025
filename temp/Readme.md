@@ -1,0 +1,1 @@
+Aquí se guardarán las imñagenes de forma temporal.

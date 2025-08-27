@@ -1,9 +1,18 @@
+import fs from "fs"
 import { Products } from "../models/Products.js"
+import { Images } from "../models/Images.js"
 
 export const createProduct = async (req, res) => {
-    const {body} = req
+    const {body, file} = req
 
     try {
+
+        if (!file) {
+            return res.status(400).json({
+                ok: false,
+                msg: "La imagen no se guardó correctamente."
+            })
+        }
 
         const prod = await Products.findOne({name: body.name})
 
@@ -14,7 +23,32 @@ export const createProduct = async (req, res) => {
             })
         }
 
-        const newProd = await Products.create(body)
+        const imageBuffer = fs.readFileSync("./" + file.path)
+
+        const image = await Images.create({
+            fileName: file.filename,
+            img: {
+                data: imageBuffer,
+                contentType: "image.png"
+            }
+        })
+
+        if (!image) {
+            return res.status(400).json({
+                ok: false,
+                msg: "La imagen no se guardó correctamente."
+            })
+        }
+
+        const newProd = await Products.create({
+            ...body,
+            img: `${process.env.BASE_URL_API}/images/${image._id}`
+        })
+
+        fs.rm("./" + file.path, error => {
+            if (error) console.log("Lo sentimos, no hemos podido eliminar la imagen temporal")
+            else console.log("El archivo se eliminó correctamente.")
+        })
 
         res.json({
             ok: true,
@@ -34,7 +68,7 @@ export const getProducts = async (req, res) => {
 
     const { query } = req; // name pageNumber documentsPerPage
 
-    const documentsPerPage = parseInt(query.documentsPerPage) || 10;
+    const documentsPerPage = parseInt(query.documentsPerPage) || 20;
     const skip = ((parseInt(query.pageNumber) || 1) - 1) * documentsPerPage
 
     try {

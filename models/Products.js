@@ -49,4 +49,10 @@ const ProductSchema = new Schema({
     },
 }, {timestamps: true})
 
+ProductSchema.set("toJSON", {
+    transform: (doc, ret, options) => {
+        ret.id = ret._id;
+        delete ret._id
+}})
+
 export const Products = model("Product", ProductSchema)
