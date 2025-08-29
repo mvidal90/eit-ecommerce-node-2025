@@ -29,7 +29,7 @@ export const createProduct = async (req, res) => {
             fileName: file.filename,
             img: {
                 data: imageBuffer,
-                contentType: "image.png"
+                contentType: "image/png"
             }
         })
 
