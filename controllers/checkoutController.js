@@ -7,7 +7,12 @@ export const createCheckoutPreference = async (req, res) => {
         const preference = new Preference(client)
 
         const response = await preference.create({
-            body
+            body: {
+                ...body,
+                back_urls: {
+                    success: `${process.env.URL_FRONT}/checkout/success`
+                }   
+            }
         })
 
         res.json({
